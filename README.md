@@ -87,6 +87,16 @@ The collected data is processed by a Python backend, exposed through a Flask RES
 
 ![Modbus RTU Python](images/python/python_modbus_rtu.png)
 
+## 📊 Web Dashboard
+
+### Smart Building Dashboard (BACnet/IP)
+
+![Smart Building Dashboard](images/dashboard/smart_building_dashboard.png)
+
+### Modbus RTU Dashboard
+
+![Modbus RTU Dashboard](images/dashboard/modbus_Dashboard.png)
+
 
 ### Modbus RTU Industrial IoT
 
