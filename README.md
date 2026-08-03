@@ -79,6 +79,14 @@ The collected data is processed by a Python backend, exposed through a Flask RES
 
 ![Modbus RTU Arduino](images/arduino/modbus_master_slave_arduino.png)
 
+### BACnet/IP Python Backend
+
+![BACnet/IP Python](images/python/python_bacnet.png)
+
+### Modbus RTU Python Backend
+
+![Modbus RTU Python](images/python/python_modbus_rtu.png)
+
 
 ### Modbus RTU Industrial IoT
 
