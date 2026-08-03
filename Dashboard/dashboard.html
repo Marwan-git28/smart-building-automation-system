@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial IoT Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; text-align: center; margin: 0; padding: 30px; }
+        h1 { color: #38bdf8; margin-bottom: 5px; font-size: 2em; }
+        .subtitle { color: #94a3b8; margin-bottom: 25px; font-size: 1.1em; }
+
+        /* Status & Info Bar */
+        .info-panel { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .badge { background: #1e293b; padding: 10px 20px; border-radius: 8px; font-size: 0.95em; border: 1px solid #334155; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .badge span { font-weight: bold; }
+
+        /* Card Container */
+        .card-container { display: flex; justify-content: center; gap: 25px; margin-top: 20px; flex-wrap: wrap; }
+        .card { background: #1e293b; padding: 30px 20px; border-radius: 12px; box-shadow: 0 6px 12px rgba(0,0,0,0.4); min-width: 260px; border: 1px solid #334155; transition: 0.3s; }
+        
+        .card h3 { color: #cbd5e1; margin: 0 0 15px 0; font-size: 1.2em; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Angka Sensor Lebih Besar */
+        .value { font-size: 3.5em; font-weight: 800; margin: 10px 0; transition: color 0.3s; }
+        .unit { font-size: 0.4em; font-weight: normal; color: #94a3b8; margin-left: 5px; }
+
+        /* Status Warna Alarm */
+        .status-normal { color: #4ade80; }   /* Hijau */
+        .status-warning { color: #facc15; }  /* Kuning */
+        .status-critical { color: #ef4444; } /* Merah */
+    </style>
+</head>
+<body>
+    <h1>Industrial IoT Real-Time Dashboard</h1>
+    <div class="subtitle">Monitoring Modbus RTU via MQTT & Flask</div>
+
+    <!-- Informasi Sistem & Status -->
+    <div class="info-panel">
+        <div class="badge">Protocol: <span>Modbus RTU</span></div>
+        <div class="badge">Broker: <span>EMQX Cloud</span></div>
+        <div class="badge">Device: <span style="color: #4ade80;">ONLINE 🟢</span></div>
+        <div class="badge">MQTT: <span style="color: #4ade80;">CONNECTED</span></div>
+        <div class="badge">Last Update: <span id="timestamp">-</span></div>
+    </div>
+
+    <!-- Card Sensor -->
+    <div class="card-container">
+        <!-- Tank Level -->
+        <div class="card">
+            <h3>Tank Level</h3>
+            <div class="value status-normal" id="tank">-<span class="unit">%</span></div>
+        </div>
+        <!-- Flow Rate -->
+        <div class="card">
+            <h3>Flow Rate</h3>
+            <div class="value status-normal" id="flow">-<span class="unit">L/min</span></div>
+        </div>
+        <!-- Pressure -->
+        <div class="card">
+            <h3>Pressure</h3>
+            <div class="value status-normal" id="press">-<span class="unit">bar</span></div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatusClass(elementId, value, warnThreshold, critThreshold) {
+            const el = document.getElementById(elementId);
+            // Hapus kelas alarm lama
+            el.classList.remove('status-normal', 'status-warning', 'status-critical');
+            
+            // Logika Warna Alarm (Normal = Hijau, Warning = Kuning, Critical = Merah)
+            if (value >= critThreshold) {
+                el.classList.add('status-critical');
+            } else if (value >= warnThreshold) {
+                el.classList.add('status-warning');
+            } else {
+                el.classList.add('status-normal');
+            }
+        }
+
+        function fetchData() {
+            fetch('/api/data')
+                .then(response => response.json())
+                .then(data => {
+                    let tank = data.tank_level;
+                    let flow = data.flow_rate;
+                    let press = data.pressure;
+// Update Nilai ke HTML (dengan mempertahankan satuan)
+                    document.getElementById('tank').innerHTML = tank + '<span class="unit">%</span>';
+                    document.getElementById('flow').innerHTML = flow + '<span class="unit">L/min</span>';
+                    document.getElementById('press').innerHTML = press + '<span class="unit">bar</span>';
+
+                    // Atur ambang batas alarm (Bisa disesuaikan: Warning di atas 70, Critical di atas 90 contohnya)
+                    updateStatusClass('tank', tank, 70, 90);
+                    updateStatusClass('flow', flow, 60, 85);
+                    updateStatusClass('press', press, 8, 15);
+
+                    // Update Timestamp Real-Time format lengkap
+                    const now = new Date();
+                    const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                    document.getElementById('timestamp').innerText = now.toLocaleDateString('en-GB', options).replace(',', '');
+                })
+                .catch(err => console.error('Error fetching data:', err));
+        }
+
+        setInterval(fetchData, 1000);
+    </script>
+</body>
+</html>
