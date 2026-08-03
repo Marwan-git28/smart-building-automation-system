@@ -43,6 +43,11 @@ The collected data is processed by a Python backend, exposed through a Flask RES
 
 ## 🛠️ Hardware
 
+![BACnet/IP Hardware](images/hardware/hardware_BACnetIP.jpg)
+
+![Modbus RTU Hardware](images/hardware/hardware_modbus_slavemaster.jpg)
+
+
 - ESP32 x2 (Modbus RTU Master & Slave)
 - ESP32 x1 (BACnet/IP)
 - RS485 Module x2
