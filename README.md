@@ -35,9 +35,9 @@ The collected data is processed by a Python backend, exposed through a Flask RES
 
 ## 🏗️ System Architecture
 
-(Add Modbus RTU Architecture)
+![BACnet/IP Architecture](images/architecture/BACnetIP.drawio.png)
 
-(Add BACnet/IP Architecture)
+![Modbus RTU Architecture](images/architecture/ModbusRTU.drawio.png)
 
 ---
 
